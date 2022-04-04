@@ -1,0 +1,9 @@
+{
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "c:\\Spring 2022 Semester\\CEN 3101 - Intro to SWE\\Project\\ojdbc8.jar",
+        "ojdbc11.jar"
+    ]
+}
