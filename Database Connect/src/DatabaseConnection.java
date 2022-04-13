@@ -23,7 +23,7 @@ public class DatabaseConnection {
         }
     }
 
-    public ResultSet getResultSet(String query) {
+    public ResultSet runQuery(String query) {
         try {
             this.myResults = myStatement.executeQuery(query);
             this.myResultMetaData = this.myResults.getMetaData();
@@ -34,7 +34,7 @@ public class DatabaseConnection {
         return this.myResults;
     }
 
-    public void printResultSet() {
+    public void printQueryResults() {
         try {
 
             // Print out the query value
@@ -64,30 +64,91 @@ public class DatabaseConnection {
         }
     }
 
-    public void getClassValues() {
+    public void getAllClassValues() {
         this.myQuery = "SELECT * FROM CLASS";
-        getResultSet(myQuery);
-        printResultSet();
+        runQuery(myQuery);
+        printQueryResults();
     }
 
-    public void getUsersValues() {
+    public void getAllUsersValues() {
         this.myQuery = "SELECT * FROM USERS";
-        getResultSet(myQuery);
-        printResultSet();
+        runQuery(myQuery);
+        printQueryResults();
     }
 
-    public void getVideoValues() {
+    public void getAllVideoValues() {
         this.myQuery = "SELECT * FROM VIDEO";
-        getResultSet(myQuery);
-        printResultSet();
+        runQuery(myQuery);
+        printQueryResults();
     }
+    /*
+    public void addClassValue() {
+        System.out.println("This is where I add a class value");
+        //this.myQuery = "INSERT INTO class VALUES ('222', 222, 222, '222');";
+        this.myQuery = "INSERT INTO class VALUES (?, ?, ?, ?);";
+        /*
+        try{
+            myConn.setAutoCommit(false);
+            this.myPreparedStatement = myConn.prepareStatement(myQuery);
+            this.myPreparedStatement.setString(1, "CSCI");
+            this.myPreparedStatement.setInt(2, 1234);
+            this.myPreparedStatement.setInt(3, 123);
+            this.myPreparedStatement.setString(4, "2014");
+            this.myPreparedStatement.executeUpdate();
+            myConn.commit();
+            myConn.setAutoCommit(true);
+            getQueryResults(myQuery);
+            getAllClassValues();
+            printQueryResults();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        runQuery(myQuery);
+        getAllClassValues();
+        printQueryResults();
+
+    }
+    */
+
+// Below are the methods for the functionality
+
+    //Change return type to JSON later
+    public String checkUserSignIn(String userName, String password) {
+        this.myQuery = "SELECT * FROM USERS WHERE USERNAME = '" + userName + "' AND PASSWORD = '" + password + "';";
+        runQuery(myQuery);
+        try {
+            if (this.myResults.next()) {
+                //Return userID
+                //Get UserID
+                this.myQuery = "SELECT USERID FROM USERS WHERE USERNAME = '" + userName + "' AND PASSWORD = '" + password + "';";
+                runQuery(myQuery);
+
+                String returnedUserID = "";
+                //Set userID for returninig
+                returnedUserID = this.myResults.getString(1);
+                return returnedUserID;
+            } else {
+                return "Failure";
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Failure byexception in checkUser");
+        }
+
+        printQueryResults();
+        return "";
+    }
+
 
     public static void main(String args[]) {
         DatabaseConnection db = new DatabaseConnection();
         db.getConnection();
-        db.getClassValues();
-        db.getUsersValues();
-        db.getVideoValues();
+        db.getAllClassValues();
+        db.getAllUsersValues();
+        db.getAllVideoValues();
+        //db.addClassValue();
         db.closeConnection();
     }
 
