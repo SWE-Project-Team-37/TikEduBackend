@@ -31,7 +31,7 @@ def configureJSON_signin(signInIsSuccessful,userAccessToken,errorMessage):
     global myJ
     myJ = json.dumps({'signInIsSuccessful': signInIsSuccessful, 'userAccessToken': userAccessToken, 'errorMessage': errorMessage})
 
-def signinLogic(username,password,usertype):
+def signinLogic(username,password):
     # Call function checkUserExists()
     # Above function will return true if the username/password combo already exists in the database
 
@@ -55,6 +55,8 @@ def sendAllUserDataLogic(userID):
     global myJ
     userData = []
     # SELECT statement to find user with given userID in the database
+    # save resullt of above statement to usertype, username, tags_rank, tags_names, hashedPassword
+    # userType = 
     # if userID found:
         # userData.append(true) # userDataSentSuccessfully
         # userData.append(usertype) # usertype
@@ -76,6 +78,28 @@ def sendAllUserDataLogic(userID):
     # configureJSON_sendAllUserData(userData)
     return
 
+# User Associated Classes Implementation
+def configureJSON_UserAssociatedClasses(isSuccessful,classes,errorMessage):
+    global myJ
+    # classes is a list
+    myJ = json.dumps({'userAssociatedClassesSuccessful:': isSuccessful, 'userClasses': classes, 'errorMessage': errorMessage})
+    return
+
+def userAssociatedClassesLogic(userID):
+    global myJ
+    # SELECT statement to find user with given userID in the database
+    # if userID found:
+        # isSuccessful = true
+        # classes = list of classIDs associated with userID
+        # errorMessage = ""
+    # if userID not found:
+        # isSuccessful = false
+        # classes = []
+        # errorMessage = "Error with finding User Associated Classes - UserID not found"
+
+    # configureJSON_UserAssociatedClasses(isSuccessful,classes,errorMessage)
+    return
+
 class myHandler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
         pass
@@ -84,7 +108,7 @@ class myHandler(BaseHTTPRequestHandler):
         # Add response header to header's buffer & log accepted request
         self.send_response(200)
         # Add HTTP header to internal buffer to be written to output stream
-        self.send_header('Content-type', 'text/html')
+        self.send_header('Content-type', 'text/html') #FIXME TRY DIFFERENT INPUTS TO THIS FXN HERE TO BE DIFFERENT/MORE SPECIFIC
         # Indicate end of HTTP headers in response and send to output stream
         self.end_headers()
         return
@@ -107,7 +131,7 @@ class myHandler(BaseHTTPRequestHandler):
        #functionRequest = str(self.path)
         functionRequest = "diffsignup"
 
-        if functionRequest == "signup":
+        if functionRequest == "signUp":
             print("Sign up request received from client\n")
             clientInfo = json.loads(postData.decode('utf-8'))
             signupLogic(clientInfo['username'],clientInfo['password'],clientInfo['usertype'])
@@ -115,18 +139,34 @@ class myHandler(BaseHTTPRequestHandler):
             self.wfile.write(myJ.encode('utf-8'))
 
             return 
-        elif functionRequest == "signin":
+        elif functionRequest == "signIn":
             print("Sign in request received from client\n")
             clientInfo = json.loads(postData.decode('utf-8'))
-            signinLogic(clientInfo['username'],clientInfo['password'],clientInfo['usertype'])
+            signinLogic(clientInfo['username'],clientInfo['password'])
             self.configureResponse()
             self.wfile.write(myJ.encode('utf-8'))
 
             return
+        elif functionRequest == "sendAllUserData":
+            print("Send All User Data request received from client\n")
+            clientInfo = json.loads(postData.decode('utf-8'))
+            sendAllUserDataLogic(clientInfo['userAccessToken'])
+            self.configureResponse()
+            self.wfile.write(myJ.encode('utf-8'))
+
+            return
+        elif functionRequest == "userAssociatedClasses":
+            print("User Associated Classes request received from client\n")
+            clientInfo = json.loads(postData.decode('utf-8'))
+            userAssociatedClassesLogic(clientInfo['userAccessToken'])
+            self.configureResponse()
+            self.wfile.write(myJ.encode('utf-8'))
+
+            return  
         else:
             print("Different request received from client\n")
             #myJ = json.dumps({"Most recently bought plant" : "White Princess Philodendron", "Coffee Flavor Tonight" : "Toasted Almond", "Best Tequila" : "Tears of Llorona"})
-            myJ = json.dumps({"plant array" : ["White Princess Philodendron", "Pink Princess Philodendron", "Monstera Albo"]})
+            myJ = json.dumps({"plant array" : ["White Princess Philodendron", "Pink Princess Philodendron", "Monstera Albo"], "int test":23})
             self.configureResponse()
             self.wfile.write(myJ.encode('utf-8'))
 
@@ -138,12 +178,12 @@ def run(server_class=HTTPServer, handler_class=myHandler, PORT=8080, HOST = "loc
     try:
         httpd.serve_forever()     
     except KeyboardInterrupt:
-        print("\nServer Shutdown: keyboard Interrupt\nGoodbye!")
+        print("\nServer Shutdown: Keyboard Interrupt\nGoodbye!")
         pass
     httpd.server_close()
 
 # Driver code for server
 PORT = 8080
 HOST = "localhost" #"192.168.1.9"
-print("Welcome to the TikEdu server on port {}!\n".format(PORT))
+print("Welcome to the TikEdu server! You are on port {}.\n".format(PORT))
 run(PORT = PORT, HOST = HOST)
