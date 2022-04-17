@@ -25,7 +25,14 @@ def get_all_users(cursor):
     cursor.execute("SELECT * FROM TikEdu_Users")
     return cursor.fetchall()
 
+def getUserID(cursor, username, password):
+    #Gets the userID of a user
+    print("unsername is ", username)
+    print("password is ", password)
 
+    hashedPassword = hashlib.sha256(password.encode('utf-8')).hexdigest()
+    cursor.execute("SELECT UserID FROM TikEdu_User WHERE Username = :username AND HashedPassword = HEXTORAW(:hashedPassword)", (username, hashedPassword))
+    return cursor.fetchone()[0]
 
 
 def addClass(cursor, teacherID, className):
@@ -68,30 +75,23 @@ def checkUserExists(cursor, username, password):
 # HOW TO HASH
 
 # Runnning Code
-connection = None
 
-connection = get_connection()
-connection.autocommit = True
-cursor = get_cursor(connection)
+# print('before')
+# #addUser(cursor, "teacher", "mathteacher1username", "mathteacher1password")
 
-print('before')
-#addUser(cursor, "teacher", "mathteacher1username", "mathteacher1password")
-
-#addClass(cursor, 123, "Math")
-liwst = ["bob", "joe", "jane"]
+# #addClass(cursor, 123, "Math")
+# liwst = ["bob", "joe", "jane"]
 
 #addVideo(cursor, None, liwst, "FirstMath Video", 123, 0, 1)
 
-if (checkUserExists(cursor, "mathteacher1username", "mathteacher1password")):
-    print("User exists")
-else:
-    print("User does not exist")
-print('after')
-#End of file
-close_cursor(cursor)
-close_connection(connection)
-
-
+# if (checkUserExists(cursor, "mathteacher1username", "mathteacher1password")):
+#     print("User exists")
+# else:
+#     print("User does not exist")
+# print('after')
+# #End of file
+# close_cursor(cursor)
+# close_connection(connection)
 
 
 
