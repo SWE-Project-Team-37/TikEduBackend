@@ -153,7 +153,8 @@ class myHandler(BaseHTTPRequestHandler):
         functionRequest = clientInfo['path']
 
         if functionRequest == "/signUp":
-            print("Sign up request received from client\n")
+            print("Sign up request received from client")
+            print("____________________________________")
             
             signupLogic(clientInfo['username'],clientInfo['password'],clientInfo['usertype'])
             self.configureResponse()
@@ -161,7 +162,9 @@ class myHandler(BaseHTTPRequestHandler):
 
             return 
         elif functionRequest == "/signIn":
-            print("Sign in request received from client\n")
+            print("Sign in request received from client")
+            print("____________________________________")
+            
             clientInfo = json.loads(postData.decode('utf-8'))
             signinLogic(clientInfo['username'],clientInfo['password'])
             self.configureResponse()

@@ -1,3 +1,4 @@
+from colorama import Cursor
 import cx_Oracle
 from django.test import tag
 from matplotlib.pyplot import connect, title
@@ -27,8 +28,9 @@ def get_all_users(cursor):
 
 def getUserID(cursor, username, password):
     #Gets the userID of a user
-    print("unsername is ", username)
+    print("username is ", username)
     print("password is ", password)
+    print()
 
     hashedPassword = hashlib.sha256(password.encode('utf-8')).hexdigest()
     cursor.execute("SELECT UserID FROM TikEdu_User WHERE Username = :username AND HashedPassword = HEXTORAW(:hashedPassword)", (username, hashedPassword))
@@ -52,14 +54,10 @@ def addVideo(cursor, video, tags, title, creatorID, isPublic, isVerified):
     for i in tags:
         beginning += "'" + i + "',"
 
-    print (beginning)
     beginning = beginning[:-1]
-    print (beginning)
     
     # Add a video to a database
-    #cursor.execute("INSERT INTO TikEdu_Video VALUES (Video_Tag_Array(:tags), :title, Video_Comment_Array(), :creatorID, :isPublic, 0, 0, 0, :isVerified, 0, DEFAULT)", (tags, title, creatorID, isPublic, isVerified))
     addedList = beginning + "), :title, Video_Comment_Array(), Video_CommentUserID_Array(), :creatorID, :isPublic, 0, 0, 0, :isVerified, 0, DEFAULT)"
-    print(addedList)
     cursor.execute(addedList, (title, creatorID, isPublic, isVerified))
 
 
@@ -71,35 +69,36 @@ def checkUserExists(cursor, username, password):
         return False
     else:
         return True
-##
-# HOW TO HASH
 
-# Runnning Code
+## Tests the insertions, uncomment and run just this file on UF VPN
 
-# print('before')
-# #addUser(cursor, "teacher", "mathteacher1username", "mathteacher1password")
+# connection = get_connection()
+# connection.autocommit = True
+# cursor = get_cursor(connection)
 
-# #addClass(cursor, 123, "Math")
-# liwst = ["bob", "joe", "jane"]
+# print('Testing Insertions')
 
-#addVideo(cursor, None, liwst, "FirstMath Video", 123, 0, 1)
+# username = "testUsername"
+# password = "testPassword"
+# addUser(cursor, "teacher", username, password)
 
-# if (checkUserExists(cursor, "mathteacher1username", "mathteacher1password")):
-#     print("User exists")
+# addClass(cursor, 123, "Math2")
+
+# commenters = ["bob", "joe", "jane"]
+# addVideo(cursor, None, commenters, "FirstMath Video", 123, 0, 1)
+
+# if (checkUserExists(cursor, username, password)):
+#     print(username + " exists")
 # else:
-#     print("User does not exist")
-# print('after')
+#     print(username + " doesn't exists")
+
+# username = "fakeUsername"
+# password = "fakePassword"
+# if (checkUserExists(cursor, username, password)):
+#     print(username + " exists")
+# else:
+#     print(username + " doesn't exists")
+
 # #End of file
 # close_cursor(cursor)
 # close_connection(connection)
-
-
-
-# cur = connection.cursor()
-# cur.execute("select * from class")
-# #gertting the column names
-# col_names = [row[0] for row in cur.description]
-# print(col_names)
-# res = cur.fetchall()
-# for row in res:
-#     print(row)
