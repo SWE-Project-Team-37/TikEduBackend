@@ -1,7 +1,4 @@
-from colorama import Cursor
 import cx_Oracle
-from django.test import tag
-from matplotlib.pyplot import connect, title
 import config
 import hashlib
 
@@ -11,7 +8,7 @@ def get_connection():
 
 def get_cursor(connection):
     #Gets a cursor to the database
-    return connection.cursor()\
+    return connection.cursor()
 
 def close_cursor(cursor):
     #Closes the cursor to the database
@@ -72,33 +69,33 @@ def checkUserExists(cursor, username, password):
 
 ## Tests the insertions, uncomment and run just this file on UF VPN
 
-# connection = get_connection()
-# connection.autocommit = True
-# cursor = get_cursor(connection)
+connection = get_connection()
+connection.autocommit = True
+cursor = get_cursor(connection)
 
-# print('Testing Insertions')
+print('Testing Insertions')
 
-# username = "testUsername"
-# password = "testPassword"
-# addUser(cursor, "teacher", username, password)
+username = "testUsername"
+password = "testPassword"
+addUser(cursor, "teacher", username, password)
 
-# addClass(cursor, 123, "Math2")
+addClass(cursor, 123, "Math2")
 
-# commenters = ["bob", "joe", "jane"]
-# addVideo(cursor, None, commenters, "FirstMath Video", 123, 0, 1)
+commenters = ["bob", "joe", "jane"]
+addVideo(cursor, None, commenters, "FirstMath Video", 123, 0, 1)
 
-# if (checkUserExists(cursor, username, password)):
-#     print(username + " exists")
-# else:
-#     print(username + " doesn't exists")
+if (checkUserExists(cursor, username, password)):
+    print(username + " exists")
+else:
+    print(username + " doesn't exists")
 
-# username = "fakeUsername"
-# password = "fakePassword"
-# if (checkUserExists(cursor, username, password)):
-#     print(username + " exists")
-# else:
-#     print(username + " doesn't exists")
+username = "fakeUsername"
+password = "fakePassword"
+if (checkUserExists(cursor, username, password)):
+    print(username + " exists")
+else:
+    print(username + " doesn't exists")
 
-# #End of file
-# close_cursor(cursor)
-# close_connection(connection)
+#End of file
+close_cursor(cursor)
+close_connection(connection)
