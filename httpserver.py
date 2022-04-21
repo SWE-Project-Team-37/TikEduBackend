@@ -1,9 +1,5 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from io import SEEK_SET
-from sre_constants import SUCCESS
 import json
-from colorama import Cursor
-from matplotlib.font_manager import json_dump
 import ServerCode
 global myJson
 
@@ -149,7 +145,6 @@ class myHandler(BaseHTTPRequestHandler):
         # Get data received
         postData = self.rfile.read(contentLength) 
         clientInfo = json.loads(postData.decode('utf-8'))
-       #functionRequest = str(self.path)
         functionRequest = clientInfo['path']
 
         if functionRequest == "/signUp":
@@ -190,7 +185,6 @@ class myHandler(BaseHTTPRequestHandler):
         else:
             print("Different request received from client\n")
             print(postData)
-            #myJ = json.dumps({"Most recently bought plant" : "White Princess Philodendron", "Coffee Flavor Tonight" : "Toasted Almond", "Best Tequila" : "Tears of Llorona"})
             myJson = json.dumps({"plant array" : ["White Princess Philodendron", "Pink Princess Philodendron", "Monstera Albo"], "int test":23})
             self.configureResponse()
             self.wfile.write(myJson.encode('utf-8'))
